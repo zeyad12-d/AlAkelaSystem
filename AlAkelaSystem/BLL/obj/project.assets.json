@@ -987,19 +987,6 @@
           }
         }
       },
-      "BLL/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v8.0",
-        "dependencies": {
-          "DTO": "1.0.0"
-        },
-        "compile": {
-          "bin/placeholder/BLL.dll": {}
-        },
-        "runtime": {
-          "bin/placeholder/BLL.dll": {}
-        }
-      },
       "DAL/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -2781,11 +2768,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "BLL/1.0.0": {
-      "type": "project",
-      "path": "../BLL/BLL.csproj",
-      "msbuildProject": "../BLL/BLL.csproj"
-    },
     "DAL/1.0.0": {
       "type": "project",
       "path": "../DAL/DAL.csproj",
@@ -2799,7 +2781,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "BLL >= 1.0.0"
+      "DTO >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -2809,11 +2791,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\PL\\PL.csproj",
-      "projectName": "PL",
-      "projectPath": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\PL\\PL.csproj",
+      "projectUniqueName": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\BLL\\BLL.csproj",
+      "projectName": "BLL",
+      "projectPath": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\BLL\\BLL.csproj",
       "packagesPath": "C:\\Users\\Officemax\\.nuget\\packages\\",
-      "outputPath": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\PL\\obj\\",
+      "outputPath": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\BLL\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -2834,8 +2816,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\BLL\\BLL.csproj": {
-              "projectPath": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\BLL\\BLL.csproj"
+            "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\DTO\\DTO.csproj": {
+              "projectPath": "D:\\c .net\\MVC Projects and Days\\AlAkelaSystem\\AlAkelaSystem\\DTO\\DTO.csproj"
             }
           }
         }
@@ -2867,9 +2849,6 @@
         "assetTargetFallback": true,
         "warn": true,
         "frameworkReferences": {
-          "Microsoft.AspNetCore.App": {
-            "privateAssets": "none"
-          },
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
