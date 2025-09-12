@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace PL.Extensons
 {
