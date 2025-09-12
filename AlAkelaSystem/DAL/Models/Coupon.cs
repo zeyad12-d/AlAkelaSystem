@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ namespace DAL.Models
         [Key]
         public int Id { get; set; }
         public string Code { get; set; } = string.Empty;
+        [Column(TypeName = "decimal(18,2)")]
         public decimal DiscountAmount { get; set; }
         public DateTime ExpiryDate { get; set; }
         public bool IsActive { get; set; } = true;

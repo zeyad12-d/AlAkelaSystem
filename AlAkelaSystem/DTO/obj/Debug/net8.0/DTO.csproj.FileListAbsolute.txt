@@ -1,0 +1,16 @@
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\bin\Debug\net8.0\DTO.deps.json
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\bin\Debug\net8.0\DTO.dll
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\bin\Debug\net8.0\DTO.pdb
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\bin\Debug\net8.0\DAL.dll
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\bin\Debug\net8.0\DAL.pdb
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.csproj.AssemblyReference.cache
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.GeneratedMSBuildEditorConfig.editorconfig
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.AssemblyInfoInputs.cache
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.AssemblyInfo.cs
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.csproj.CoreCompileInputs.cache
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.sourcelink.json
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.csproj.Up2Date
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.dll
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\refint\DTO.dll
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\DTO.pdb
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\DTO\obj\Debug\net8.0\ref\DTO.dll

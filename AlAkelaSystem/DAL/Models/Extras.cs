@@ -13,5 +13,6 @@ namespace DAL.Models
         public decimal Price { get; set; }
         public int CategoryId { get; set; }
         public virtual Category Category { get; set; } = default!;
+        public virtual ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 }
