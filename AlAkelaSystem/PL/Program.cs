@@ -1,3 +1,5 @@
+using PL.Extensons;
+
 namespace PL
 {
     public class Program
@@ -8,6 +10,9 @@ namespace PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddApplactionBDContext(builder.Configuration);
+         
 
             var app = builder.Build();
 
