@@ -8,5 +8,7 @@ namespace DAL.Models
         [Required, StringLength(100)] public string Name { get; set; } = string.Empty;
         [StringLength(20)] public string? Phone { get; set; }
         [StringLength(250)] public string? Address { get; set; }
+
+        public ICollection<Orders> Orders { get; set; } = new HashSet<Orders>();  
     }
 }
