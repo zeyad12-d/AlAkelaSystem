@@ -12,5 +12,11 @@ namespace PL.Extensons
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             return services;
         }
+
+        public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
+        {
+            services.AddScoped<DAL.unitofwork.UnitOfWork>();
+            return services;
+        }
     }
 }
