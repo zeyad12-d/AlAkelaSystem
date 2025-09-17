@@ -13,8 +13,8 @@ namespace PL
 
             builder.Services
                 .AddApplactionBDContext(builder.Configuration)
-                .AddUnitOfWork();
-         
+                .AddUnitOfWork().AddAutoMapper();
+        
 
             var app = builder.Build();
 

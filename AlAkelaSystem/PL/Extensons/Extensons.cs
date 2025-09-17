@@ -18,5 +18,11 @@ namespace PL.Extensons
             services.AddScoped<DAL.unitofwork.UnitOfWork>();
             return services;
         }
+        // atuomapper
+        public static IServiceCollection AddAutoMapper(this IServiceCollection services)
+        {
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            return services;
+        }
     }
 }
