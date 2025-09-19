@@ -4,6 +4,6 @@
     {
         public int productId { get; set; }
         public int quantity { get; set; }
-     
+        public decimal UnitPrice { get; internal set; }
     }
 }

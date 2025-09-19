@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,7 @@ namespace DTO.OrderDtos
         public DateTime OrderDate { get; set; }
         public decimal TotalAmount { get; set; }
 
+        public OrderStatus Stauts { get; set; }
         public string CustomerName { get; set; } = string.Empty;
 
         public List<OrderItemsRepsonseDto> OrderItems { get; set; } = new List<OrderItemsRepsonseDto>();
