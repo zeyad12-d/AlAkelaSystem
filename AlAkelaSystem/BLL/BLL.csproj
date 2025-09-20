@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Services\qlde3pjv.jxc~" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DTO\DTO.csproj" />
   </ItemGroup>
 
