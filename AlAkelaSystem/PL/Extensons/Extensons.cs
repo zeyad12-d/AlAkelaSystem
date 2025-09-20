@@ -1,4 +1,7 @@
-﻿using DAL.Repository;
+﻿using BLL.Interfaces.ManagerServices;
+using BLL.Interfaces.ModlesInterface;
+using BLL.Services;
+using DAL.unitofwork;
 using Microsoft.EntityFrameworkCore;
 
 namespace PL.Extensons
@@ -15,7 +18,13 @@ namespace PL.Extensons
 
         public static IServiceCollection AddUnitOfWork(this IServiceCollection services)
         {
-            services.AddScoped<DAL.unitofwork.UnitOfWork>();
+            // Register Unit of Work
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
+            
+            // Register Services Manager
+            services.AddScoped<IServicesManager, ServicesManager>();
+            
             return services;
         }
         // atuomapper

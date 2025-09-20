@@ -14,7 +14,7 @@ namespace DTO.MapperProfiles
 
         public CategoryProfile()
         {
-            CreateMap<Category, CategoryResponesDto>().ReverseMap();
+            CreateMap<Category, CategoryResponseDto>().ReverseMap();
 
             CreateMap<Category, CategoryDetailsDto>()
                 .ForMember(dest => dest.Products, opt => opt.MapFrom(src => src.Products)).ReverseMap();

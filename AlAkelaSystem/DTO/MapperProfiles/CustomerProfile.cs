@@ -15,7 +15,7 @@ namespace DTO.MapperProfiles
 
 
         {
-            CreateMap<Customer, CustomerResponesDto>()
+            CreateMap<Customer, CustomerResponseDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))

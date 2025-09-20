@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DAL.unitofwork
 {
-    public class UnitOfWork
+    public class UnitOfWork : IUnitOfWork
     {
         public readonly AlAkelaDBcontext alAkelaDBcontext;
         public UnitOfWork(AlAkelaDBcontext alAkelaDBcontext)

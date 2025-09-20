@@ -15,6 +15,6 @@ namespace DTO.CategoryDtos
 
         public string Icon { get; set; } = null!;
 
-        public List<ProductResponesDto> Products { get; set; } = new List<ProductResponesDto>();
+        public List<ProductResponseDto> Products { get; set; } = new List<ProductResponseDto>();
     }
 }

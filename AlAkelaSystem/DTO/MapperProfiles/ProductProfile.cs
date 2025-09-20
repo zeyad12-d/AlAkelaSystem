@@ -14,7 +14,7 @@ namespace DTO.MapperProfiles
         public ProductProfile()
         {
             // Mapping configurations
-            CreateMap<Product, ProductResponesDto>().ReverseMap();
+            CreateMap<Product, ProductResponseDto>().ReverseMap();
 
             CreateMap<CreateProductDto, Product>().ReverseMap();
 
