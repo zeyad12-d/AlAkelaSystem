@@ -145,3 +145,5 @@ D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\PL\obj\Debug\net8.0\
 D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\PL\obj\Debug\net8.0\PL.pdb
 D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\PL\obj\Debug\net8.0\PL.genruntimeconfig.cache
 D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\PL\obj\Debug\net8.0\ref\PL.dll
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\PL\bin\Debug\net8.0\AutoMapper.dll
+D:\c .net\MVC Projects and Days\AlAkelaSystem\AlAkelaSystem\PL\bin\Debug\net8.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

@@ -20,7 +20,7 @@ namespace BLL.Services
             _categoryServices = new Lazy<ICategoryServices>(() => new CategoryService(unitOfWork,  mapper));
             _productServices = new Lazy<IproductServices>(() => new ProductService(unitOfWork, mapper));
             _customerServices = new Lazy<ICustomerServices>(() => new CustomerService(unitOfWork, mapper));
-            _orderServices = new Lazy<IOrderServices>(() => new OrderService(unitOfWork, mapper));
+            //_orderServices = new Lazy<IOrderServices>(() => new OrderService(unitOfWork, mapper));
             _couponServices = new Lazy<ICouponServices>(() => new CouponService(unitOfWork, mapper) );
             _discountServices = new Lazy<IDiscountServices>(() => new DiscountService(unitOfWork, mapper));
             _extrasServices = new Lazy<IExtrasServices>(() => new ExtrasService(unitOfWork));
