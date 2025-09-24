@@ -8,6 +8,7 @@ namespace DTO.OrderDtos
 {
     public class CreateOrderDto
     {
+        public string CustomerId {  get; set; }
         public string CustomerName { get; set; } = string.Empty;
 
         public decimal totalAmount { get; set; }
