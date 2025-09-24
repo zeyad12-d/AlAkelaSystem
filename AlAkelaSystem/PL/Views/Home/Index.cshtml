@@ -1,8 +1,642 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "نظام نقاط البيع";
+    var categories = ViewBag.Categories as IEnumerable<CategoryResponseDto>;
+    var products = ViewBag.Products as IEnumerable<ProductResponseDto>;
+    var extras = ViewBag.Extras as IEnumerable<ExtrasResponseDto>;
+    var coupons = ViewBag.Coupons as IEnumerable<CouponResponseDto>;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <!-- قسم المنتجات -->
+    <div class="col-md-8">
+        <!-- شريط البحث والفئات -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                            <input type="text" class="form-control" id="searchInput"
+                                   placeholder="البحث عن المنتجات...">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-select" id="categoryFilter">
+                            <option value="">جميع الفئات</option>
+                            @if (categories != null)
+                            {
+                                @foreach (var category in categories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- عرض المنتجات -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-box me-2"></i>
+                    المنتجات المتاحة
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row" id="productsContainer">
+                    @if (products != null)
+                    {
+                        @foreach (var product in products)
+                        {
+                            <div class="col-md-4 col-sm-6 mb-3">
+                                <div class="card product-card h-100" onclick="addToCart(@product.Id, '@product.Name', @product.Price)">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-box fa-2x text-primary mb-2"></i>
+                                        <h6 class="card-title">@product.Name</h6>
+                                        <p class="card-text text-success fw-bold">
+                                            @product.Price.ToString("C", new System.Globalization.CultureInfo("ar-SA"))
+                                        </p>
+                                        <small class="text-muted">@product.Description</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- قسم السلة والدفع -->
+    <div class="col-md-4">
+        <!-- معلومات العميل -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-user me-2"></i>
+                    معلومات العميل
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control" id="customerSearch"
+                           placeholder="البحث عن عميل...">
+                    <button class="btn btn-outline-secondary" onclick="searchCustomer()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <button class="btn btn-success btn-sm w-100" onclick="showNewCustomerModal()">
+                    <i class="fas fa-plus me-1"></i>
+                    إضافة عميل جديد
+                </button>
+                <div id="selectedCustomer" class="mt-2" style="display: none;">
+                    <div class="alert alert-info p-2">
+                        <strong id="customerName"></strong><br>
+                        <small id="customerInfo"></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- السلة -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-shopping-cart me-2"></i>
+                    السلة
+                </h6>
+                <span class="badge bg-primary" id="cartCount">0</span>
+            </div>
+            <div class="card-body">
+                <div id="cartItems">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                        <p>السلة فارغة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- الإضافات والكوبونات -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-plus-circle me-2"></i>
+                    الإضافات والخصومات
+                </h6>
+            </div>
+            <div class="card-body">
+                <!-- الإضافات -->
+                @if (extras != null)
+                {
+                    <div class="mb-3">
+                        <label class="form-label">الإضافات:</label>
+                        @foreach (var extra in extras)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox"
+                                       value="@extra.Id" id="extra@extra.Id"
+                                       onchange="toggleExtra(@extra.Id, '@extra.Name', @extra.Price)">
+                                <label class="form-check-label" for="extra@extra.Id">
+                                    @extra.Name (@extra.Price.ToString("C", new System.Globalization.CultureInfo("ar-SA")))
+                                </label>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- الكوبونات -->
+                <div class="mb-3">
+                    <label class="form-label">كوبون الخصم:</label>
+                    <select class="form-select" id="couponSelect" onchange="applyCoupon()">
+                        <option value="">اختر كوبون</option>
+                        @if (coupons != null)
+                        {
+                            @foreach (var coupon in coupons)
+                            {
+                                <option value="@coupon.Id" data-discount="@coupon.DiscountAmount">
+                                    @coupon.Code - @coupon.DiscountAmount%
+                                </option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ملخص الفاتورة -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-calculator me-2"></i>
+                    ملخص الفاتورة
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>المجموع الفرعي:</span>
+                    <span id="subtotal">0.00 ر.س</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>الإضافات:</span>
+                    <span id="extrasTotal">0.00 ر.س</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>الخصم:</span>
+                    <span id="discountAmount" class="text-success">0.00 ر.س</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>الضريبة (15%):</span>
+                    <span id="taxAmount">0.00 ر.س</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold h5">
+                    <span>المجموع النهائي:</span>
+                    <span id="finalTotal" class="text-primary">0.00 ر.س</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- أزرار الدفع -->
+        <div class="card">
+            <div class="card-body">
+                <button class="btn btn-primary w-100 mb-2" onclick="processPayment('cash')">
+                    <i class="fas fa-money-bill-wave me-2"></i>
+                    دفع نقدي
+                </button>
+                <button class="btn btn-success w-100 mb-2" onclick="processPayment('card')">
+                    <i class="fas fa-credit-card me-2"></i>
+                    دفع بالبطاقة
+                </button>
+                <button class="btn btn-warning w-100 mb-2" onclick="holdOrder()">
+                    <i class="fas fa-pause me-2"></i>
+                    تعليق الطلب
+                </button>
+                <button class="btn btn-danger w-100" onclick="clearCart()">
+                    <i class="fas fa-trash me-2"></i>
+                    مسح السلة
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Modal إضافة عميل جديد -->
+<div class="modal fade" id="newCustomerModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">إضافة عميل جديد</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="newCustomerForm">
+                    <div class="mb-3">
+                        <label class="form-label">اسم العميل *</label>
+                        <input type="text" class="form-control" id="customerName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" class="form-control" id="customerPhone">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">العنوان</label>
+                        <textarea class="form-control" id="customerAddress" rows="2"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                <button type="button" class="btn btn-primary" onclick="createNewCustomer()">حفظ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let cart = [];
+        let selectedCustomer = null;
+        let selectedExtras = [];
+        let appliedCoupon = null;
+
+        // إضافة منتج للسلة
+        function addToCart(productId, productName, productPrice) {
+            const existingItem = cart.find(item => item.productId === productId);
+
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    productId: productId,
+                    productName: productName,
+                    price: productPrice,
+                    quantity: 1
+                });
+            }
+
+            updateCartDisplay();
+            updateTotals();
+        }
+
+        // تحديث عرض السلة
+        function updateCartDisplay() {
+            const cartContainer = document.getElementById('cartItems');
+            const cartCount = document.getElementById('cartCount');
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="text-center text-muted">
+                        <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                        <p>السلة فارغة</p>
+                    </div>
+                `;
+                cartCount.textContent = '0';
+                return;
+            }
+
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            cartContainer.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">${item.productName}</h6>
+                            <small class="text-muted">${item.price} ر.س × ${item.quantity}</small>
+                        </div>
+                        <div class="btn-group btn-group-sm">
+                            <button class="btn btn-outline-secondary" onclick="decreaseQuantity(${item.productId})">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="increaseQuantity(${item.productId})">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="removeFromCart(${item.productId})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // زيادة الكمية
+        function increaseQuantity(productId) {
+            const item = cart.find(item => item.productId === productId);
+            if (item) {
+                item.quantity += 1;
+                updateCartDisplay();
+                updateTotals();
+            }
+        }
+
+        // تقليل الكمية
+        function decreaseQuantity(productId) {
+            const item = cart.find(item => item.productId === productId);
+            if (item && item.quantity > 1) {
+                item.quantity -= 1;
+                updateCartDisplay();
+                updateTotals();
+            }
+        }
+
+        // إزالة من السلة
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.productId !== productId);
+            updateCartDisplay();
+            updateTotals();
+        }
+
+        // تحديث الإجماليات
+        function updateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const extrasTotal = selectedExtras.reduce((sum, extra) => sum + extra.price, 0);
+            const discountAmount = appliedCoupon ? (subtotal * appliedCoupon.discount / 100) : 0;
+            const taxableAmount = subtotal + extrasTotal - discountAmount;
+            const taxAmount = taxableAmount * 0.15;
+            const finalTotal = taxableAmount + taxAmount;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' ر.س';
+            document.getElementById('extrasTotal').textContent = extrasTotal.toFixed(2) + ' ر.س';
+            document.getElementById('discountAmount').textContent = discountAmount.toFixed(2) + ' ر.س';
+            document.getElementById('taxAmount').textContent = taxAmount.toFixed(2) + ' ر.س';
+            document.getElementById('finalTotal').textContent = finalTotal.toFixed(2) + ' ر.س';
+        }
+
+        // تطبيق كوبون الخصم
+        function applyCoupon() {
+            const couponSelect = document.getElementById('couponSelect');
+            const selectedOption = couponSelect.options[couponSelect.selectedIndex];
+
+            if (selectedOption.value) {
+                appliedCoupon = {
+                    id: selectedOption.value,
+                    discount: parseFloat(selectedOption.dataset.discount)
+                };
+            } else {
+                appliedCoupon = null;
+            }
+
+            updateTotals();
+        }
+
+        // تبديل الإضافات
+        function toggleExtra(extraId, extraName, extraPrice) {
+            const checkbox = document.getElementById(`extra${extraId}`);
+
+            if (checkbox.checked) {
+                selectedExtras.push({
+                    id: extraId,
+                    name: extraName,
+                    price: extraPrice
+                });
+            } else {
+                selectedExtras = selectedExtras.filter(extra => extra.id !== extraId);
+            }
+
+            updateTotals();
+        }
+
+        // معالجة الدفع
+        async function processPayment(paymentMethod) {
+            if (cart.length === 0) {
+                showAlert('warning', 'تنبيه', 'السلة فارغة!');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const orderData = {
+                    customerId: selectedCustomer?.id || null,
+                    paymentMethod: paymentMethod,
+                    orderItems: cart.map(item => ({
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        unitPrice: item.price
+                    })),
+                    extras: selectedExtras,
+                    couponId: appliedCoupon?.id || null,
+                    totalAmount: parseFloat(document.getElementById('finalTotal').textContent.replace(' ر.س', ''))
+                };
+
+                const response = await fetch('/Home/CreateOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                const result = await response.json();
+
+                if (result.statusCode === 200 || result.statusCode === 201) {
+                    showAlert('success', 'نجح!', 'تم إنشاء الطلب بنجاح');
+                    clearCart();
+                    // يمكنك إضافة طباعة الفاتورة هنا
+                    printReceipt(result.data);
+                } else {
+                    showAlert('error', 'خطأ', result.message || 'حدث خطأ أثناء إنشاء الطلب');
+                }
+            } catch (error) {
+                showAlert('error', 'خطأ', 'حدث خطأ في الاتصال');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // مسح السلة
+        function clearCart() {
+            cart = [];
+            selectedExtras = [];
+            appliedCoupon = null;
+            selectedCustomer = null;
+
+            document.getElementById('couponSelect').value = '';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('selectedCustomer').style.display = 'none';
+            document.getElementById('customerSearch').value = '';
+
+            updateCartDisplay();
+            updateTotals();
+        }
+
+        // البحث عن العملاء
+        async function searchCustomer() {
+            const searchTerm = document.getElementById('customerSearch').value;
+            if (!searchTerm) return;
+
+            showLoading();
+
+            try {
+                const response = await fetch(`/Home/SearchCustomers?term=${encodeURIComponent(searchTerm)}`);
+                const result = await response.json();
+
+                if (result.statusCode === 200 && result.data && result.data.length > 0) {
+                    // عرض قائمة العملاء للاختيار من بينها
+                    showCustomerSelectionModal(result.data);
+                } else {
+                    showAlert('info', 'لا توجد نتائج', 'لم يتم العثور على عملاء مطابقين');
+                }
+            } catch (error) {
+                showAlert('error', 'خطأ', 'حدث خطأ أثناء البحث');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // عرض نافذة اختيار العميل
+        function showCustomerSelectionModal(customers) {
+            // يمكنك تطوير modal لاختيار العميل
+            // لتبسيط المثال، سنختار العميل الأول
+            selectCustomer(customers[0]);
+        }
+
+        // اختيار العميل
+        function selectCustomer(customer) {
+            selectedCustomer = customer;
+            document.getElementById('customerName').textContent = customer.name;
+            document.getElementById('customerInfo').textContent = customer.phone || customer.address || '';
+            document.getElementById('selectedCustomer').style.display = 'block';
+        }
+
+        // عرض نافذة إضافة عميل جديد
+        function showNewCustomerModal() {
+            const modal = new bootstrap.Modal(document.getElementById('newCustomerModal'));
+            modal.show();
+        }
+
+        // إنشاء عميل جديد
+        async function createNewCustomer() {
+            const name = document.getElementById('customerName').value;
+            const phone = document.getElementById('customerPhone').value;
+            const address = document.getElementById('customerAddress').value;
+
+            if (!name) {
+                showAlert('warning', 'تنبيه', 'يرجى إدخال اسم العميل');
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const customerData = {
+                    name: name,
+                    phone: phone,
+                    address: address
+                };
+
+                const response = await fetch('/Home/CreateCustomer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(customerData)
+                });
+
+                const result = await response.json();
+
+                if (result.statusCode === 200 || result.statusCode === 201) {
+                    showAlert('success', 'نجح!', 'تم إنشاء العميل بنجاح');
+                    selectCustomer(result.data);
+                    bootstrap.Modal.getInstance(document.getElementById('newCustomerModal')).hide();
+                    document.getElementById('newCustomerForm').reset();
+                } else {
+                    showAlert('error', 'خطأ', result.message || 'حدث خطأ أثناء إنشاء العميل');
+                }
+            } catch (error) {
+                showAlert('error', 'خطأ', 'حدث خطأ في الاتصال');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // طباعة الفاتورة
+        function printReceipt(orderData) {
+            // يمكنك تطوير نظام طباعة الفاتورة هنا
+            console.log('طباعة الفاتورة:', orderData);
+        }
+
+        // فلترة المنتجات حسب الفئة
+        document.getElementById('categoryFilter').addEventListener('change', async function() {
+            const categoryId = this.value;
+
+            if (!categoryId) {
+                location.reload(); // إعادة تحميل جميع المنتجات
+                return;
+            }
+
+            showLoading();
+
+            try {
+                const response = await fetch(`/Home/GetProductsByCategory?categoryId=${categoryId}`);
+                const result = await response.json();
+
+                if (result.statusCode === 200 && result.data) {
+                    displayProducts(result.data);
+                }
+            } catch (error) {
+                showAlert('error', 'خطأ', 'حدث خطأ أثناء تحميل المنتجات');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // البحث في المنتجات
+        document.getElementById('searchInput').addEventListener('input', async function() {
+            const searchTerm = this.value;
+
+            if (searchTerm.length < 2) return;
+
+            showLoading();
+
+            try {
+                const response = await fetch(`/Home/SearchProducts?searchTerm=${encodeURIComponent(searchTerm)}`);
+                const result = await response.json();
+
+                if (result.statusCode === 200 && result.data) {
+                    displayProducts(result.data);
+                }
+            } catch (error) {
+                showAlert('error', 'خطأ', 'حدث خطأ أثناء البحث');
+            } finally {
+                hideLoading();
+            }
+        });
+
+        // عرض المنتجات
+        function displayProducts(products) {
+            const container = document.getElementById('productsContainer');
+
+            if (!products || products.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center"><p class="text-muted">لا توجد منتجات</p></div>';
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="col-md-4 col-sm-6 mb-3">
+                    <div class="card product-card h-100" onclick="addToCart(${product.id}, '${product.name}', ${product.price})">
+                        <div class="card-body text-center">
+                            <i class="fas fa-box fa-2x text-primary mb-2"></i>
+                            <h6 class="card-title">${product.name}</h6>
+                            <p class="card-text text-success fw-bold">
+                                ${product.price.toFixed(2)} ر.س
+                            </p>
+                            <small class="text-muted">${product.description || ''}</small>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // تحميل البيانات عند بدء الصفحة
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartDisplay();
+            updateTotals();
+        });
+    </script>
+}
