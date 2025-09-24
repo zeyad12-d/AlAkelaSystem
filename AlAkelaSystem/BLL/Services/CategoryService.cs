@@ -31,35 +31,33 @@ namespace BLL.Services
             var mapped = _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
             return new ApiResponse<IEnumerable<CategoryResponseDto>>(200, "Success", mapped);
         }
-
         #endregion
 
-        #region GategorybyId
+        #region GetCategoryById
         public async Task<ApiResponse<CategoryDetailsDto>> GetCategoryByIdAsync(int id)
         {
             var category = await _unitOfWork.CategoryRepo.GetById(id);
             if (category == null)
                 return new ApiResponse<CategoryDetailsDto>(404, "Category Not Found");
 
-            var mapped= _mapper.Map<CategoryDetailsDto>(category);
-
-            return new ApiResponse<CategoryDetailsDto>(200,"Success",mapped);
-
+            var mapped = _mapper.Map<CategoryDetailsDto>(category);
+            return new ApiResponse<CategoryDetailsDto>(200, "Success", mapped);
         }
         #endregion
 
-        #region create Category
+        #region Create Category
         public async Task<ApiResponse<CategoryResponseDto>> CreateCategoryAsync(CreateCategoryDto createCategoryDto)
         {
-            if (createCategoryDto == null) return new ApiResponse<CategoryResponseDto>(400, "Invalid Payload");
+            if (createCategoryDto == null)
+                return new ApiResponse<CategoryResponseDto>(400, "Invalid Payload");
 
             var category = _mapper.Map<Category>(createCategoryDto);
-
             var createdCategory = await _unitOfWork.CategoryRepo.Add(category);
 
             await _unitOfWork.SaveChangesAsync();
-            var mapped= _mapper.Map<CategoryResponseDto>(createdCategory);
-            return new ApiResponse<CategoryResponseDto>(200, "Success", mapped);
+
+            var mapped = _mapper.Map<CategoryResponseDto>(createdCategory);
+            return new ApiResponse<CategoryResponseDto>(201, "Category Created", mapped);
         }
         #endregion
 
@@ -68,21 +66,21 @@ namespace BLL.Services
         {
             var existingCategory = await _unitOfWork.CategoryRepo.GetById(id);
             if (existingCategory == null)
-                return new ApiResponse<CategoryResponseDto>(404,"Category Not Found");
+                return new ApiResponse<CategoryResponseDto>(404, "Category Not Found");
 
-          var category=  _mapper.Map(updateCategoryDto, existingCategory);
+            var category = _mapper.Map(updateCategoryDto, existingCategory);
             _unitOfWork.CategoryRepo.Update(category);
             await _unitOfWork.SaveChangesAsync();
 
-          var respones= _mapper.Map<CategoryResponseDto>(category);
-            return new ApiResponse<CategoryResponseDto>(200, "Category Updated", respones);
+            var response = _mapper.Map<CategoryResponseDto>(category);
+            return new ApiResponse<CategoryResponseDto>(200, "Category Updated", response);
         }
         #endregion
 
         #region DeleteCategory
         public async Task<ApiResponse<bool>> DeleteCategoryAsync(int id)
         {
-            var category= _unitOfWork.CategoryRepo.GetById(id);
+            var category = await _unitOfWork.CategoryRepo.GetById(id);
             if (category == null)
                 return new ApiResponse<bool>(404, "Category Not Found");
 
@@ -90,8 +88,10 @@ namespace BLL.Services
             if (result)
             {
                 await _unitOfWork.SaveChangesAsync();
+                return new ApiResponse<bool>(200, "Category Deleted", true);
             }
-            return new ApiResponse<bool>(200, "Success");
+
+            return new ApiResponse<bool>(400, "Delete Failed", false);
         }
         #endregion
     }
