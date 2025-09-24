@@ -1,4 +1,5 @@
-﻿using DAL.unitofwork;
+﻿using BLL.Helper;
+using DAL.unitofwork;
 using DTO.CategoryDtos;
 using System;
 using System.Collections.Generic;
@@ -10,10 +11,10 @@ namespace BLL.Interfaces.ModlesInterface
 {
     public interface ICategoryServices
     {
-        Task<IEnumerable<CategoryResponseDto>> GetAllCategoriesAsync();
-        Task<CategoryDetailsDto> GetCategoryByIdAsync(int id);
-        Task<CategoryResponseDto> CreateCategoryAsync(CreateCategoryDto createCategoryDto);
-        Task<CategoryResponseDto> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto);
-        Task<bool> DeleteCategoryAsync(int id);
+        Task<ApiResponse<IEnumerable<CategoryResponseDto>>> GetAllCategoriesAsync();
+        Task<ApiResponse<CategoryDetailsDto>> GetCategoryByIdAsync(int id);
+        Task<ApiResponse<CategoryResponseDto>> CreateCategoryAsync(CreateCategoryDto createCategoryDto);
+        Task<ApiResponse<CategoryResponseDto>> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto);
+        Task<ApiResponse<bool>> DeleteCategoryAsync(int id);
     }
 }

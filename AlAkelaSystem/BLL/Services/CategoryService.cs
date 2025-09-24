@@ -1,5 +1,7 @@
 using AutoMapper;
+using BLL.Helper;
 using BLL.Interfaces.ModlesInterface;
+using DAL.Models;
 using DAL.unitofwork;
 using DTO.CategoryDtos;
 using System.Collections.Generic;
@@ -18,46 +20,79 @@ namespace BLL.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CategoryResponseDto>> GetAllCategoriesAsync()
+        #region GetAll Category
+        public async Task<ApiResponse<IEnumerable<CategoryResponseDto>>> GetAllCategoriesAsync()
         {
             var categories = await _unitOfWork.CategoryRepo.GetAll();
-            return _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
+
+            if (categories == null || !categories.Any())
+                return new ApiResponse<IEnumerable<CategoryResponseDto>>(404, "Category Not Found");
+
+            var mapped = _mapper.Map<IEnumerable<CategoryResponseDto>>(categories);
+            return new ApiResponse<IEnumerable<CategoryResponseDto>>(200, "Success", mapped);
         }
 
-        public async Task<CategoryDetailsDto> GetCategoryByIdAsync(int id)
+        #endregion
+
+        #region GategorybyId
+        public async Task<ApiResponse<CategoryDetailsDto>> GetCategoryByIdAsync(int id)
         {
             var category = await _unitOfWork.CategoryRepo.GetById(id);
-            return _mapper.Map<CategoryDetailsDto>(category);
-        }
+            if (category == null)
+                return new ApiResponse<CategoryDetailsDto>(404, "Category Not Found");
 
-        public async Task<CategoryResponseDto> CreateCategoryAsync(CreateCategoryDto createCategoryDto)
+            var mapped= _mapper.Map<CategoryDetailsDto>(category);
+
+            return new ApiResponse<CategoryDetailsDto>(200,"Success",mapped);
+
+        }
+        #endregion
+
+        #region create Category
+        public async Task<ApiResponse<CategoryResponseDto>> CreateCategoryAsync(CreateCategoryDto createCategoryDto)
         {
-            var category = _mapper.Map<DAL.Models.Category>(createCategoryDto);
-            var createdCategory = await _unitOfWork.CategoryRepo.Add(category);
-            await _unitOfWork.SaveChangesAsync();
-            return _mapper.Map<CategoryResponseDto>(createdCategory);
-        }
+            if (createCategoryDto == null) return new ApiResponse<CategoryResponseDto>(400, "Invalid Payload");
 
-        public async Task<CategoryResponseDto> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto)
+            var category = _mapper.Map<Category>(createCategoryDto);
+
+            var createdCategory = await _unitOfWork.CategoryRepo.Add(category);
+
+            await _unitOfWork.SaveChangesAsync();
+            var mapped= _mapper.Map<CategoryResponseDto>(createdCategory);
+            return new ApiResponse<CategoryResponseDto>(200, "Success", mapped);
+        }
+        #endregion
+
+        #region UpdateCategory
+        public async Task<ApiResponse<CategoryResponseDto>> UpdateCategoryAsync(int id, UpdateCategoryDto updateCategoryDto)
         {
             var existingCategory = await _unitOfWork.CategoryRepo.GetById(id);
             if (existingCategory == null)
-                return null;
+                return new ApiResponse<CategoryResponseDto>(404,"Category Not Found");
 
-            _mapper.Map(updateCategoryDto, existingCategory);
-            _unitOfWork.CategoryRepo.Update(existingCategory);
+          var category=  _mapper.Map(updateCategoryDto, existingCategory);
+            _unitOfWork.CategoryRepo.Update(category);
             await _unitOfWork.SaveChangesAsync();
-            return _mapper.Map<CategoryResponseDto>(existingCategory);
-        }
 
-        public async Task<bool> DeleteCategoryAsync(int id)
+          var respones= _mapper.Map<CategoryResponseDto>(category);
+            return new ApiResponse<CategoryResponseDto>(200, "Category Updated", respones);
+        }
+        #endregion
+
+        #region DeleteCategory
+        public async Task<ApiResponse<bool>> DeleteCategoryAsync(int id)
         {
+            var category= _unitOfWork.CategoryRepo.GetById(id);
+            if (category == null)
+                return new ApiResponse<bool>(404, "Category Not Found");
+
             var result = await _unitOfWork.CategoryRepo.Delete(id);
             if (result)
             {
                 await _unitOfWork.SaveChangesAsync();
             }
-            return result;
+            return new ApiResponse<bool>(200, "Success");
         }
+        #endregion
     }
 }
