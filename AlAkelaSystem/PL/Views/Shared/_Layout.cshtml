@@ -142,6 +142,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Orders" ? "active" : "")"
+                           href="@Url.Action("Orders", "Home")">
+                            <i class="fas fa-receipt me-2"></i>
+                            إدارة الطلبات
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Categories" ? "active" : "")"
                            href="@Url.Action("Categories", "Home")">
                             <i class="fas fa-tags me-2"></i>

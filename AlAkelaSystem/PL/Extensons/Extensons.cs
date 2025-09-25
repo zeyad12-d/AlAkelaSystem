@@ -2,6 +2,8 @@
 using BLL.Services;
 using DAL.unitofwork;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using AutoMapper.Internal;
 
 namespace PL.Extensons
 {
@@ -29,7 +31,13 @@ namespace PL.Extensons
         // atuomapper
         public static IServiceCollection AddAutoMapper(this IServiceCollection services)
         {
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddAutoMapper(cfg =>
+            {
+                // Avoid scanning extension methods that can cause VerificationException on startup
+                cfg.Internal().MethodMappingEnabled = false;
+            },
+            typeof(DTO.MapperProfiles.CategoryProfile).Assembly);
+
             return services;
         }
     }
