@@ -4,6 +4,7 @@ using DTO.ProductDtos;
 using DTO.CategoryDtos;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace POS.Controllers
 {
@@ -24,6 +25,7 @@ namespace POS.Controllers
             var categories = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
 
             ViewBag.Categories = categories.Data ?? new List<CategoryResponseDto>();
+            ViewBag.Products = products.Data ?? new List<ProductResponseDto>();
             return View(products.Data ?? new List<ProductResponseDto>());
         }
 
@@ -56,6 +58,22 @@ namespace POS.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _servicesManager.ProductServices.DeleteProductAsync(id);
+            return Json(result);
+        }
+
+     
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int page = 1, int pageSize = 50)
+        {
+            var result = await _servicesManager.ProductServices.GetAllProductsAsync(page, pageSize);
+            return Json(result);
+        }
+
+     
+        [HttpGet]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var result = await _servicesManager.ProductServices.GetProductByIdAsync(id);
             return Json(result);
         }
 
