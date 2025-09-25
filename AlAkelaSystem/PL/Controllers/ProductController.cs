@@ -40,11 +40,60 @@ namespace POS.Controllers
             return View(result.Data);
         }
 
+        // GET: /Product/Create
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var categories = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Data ?? new List<CategoryResponseDto>();
+            return View();
+        }
+
+        // JSON create endpoint
         [HttpPost]
+        [Consumes("application/json")]
         public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
         {
             var result = await _servicesManager.ProductServices.CreateProductAsync(dto);
             return Json(result);
+        }
+
+        // Form POST: /Product/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Consumes("application/x-www-form-urlencoded", "multipart/form-data")]
+        public async Task<IActionResult> Create(CreateProductDto formDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                var categories = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
+                ViewBag.Categories = categories.Data ?? new List<CategoryResponseDto>();
+                return View(formDto);
+            }
+
+            var result = await _servicesManager.ProductServices.CreateProductAsync(formDto);
+            if (result.StatusCode == 200 || result.StatusCode == 201)
+                return RedirectToAction(nameof(Index));
+
+            var cats = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
+            ViewBag.Categories = cats.Data ?? new List<CategoryResponseDto>();
+            ViewBag.Error = result.Message;
+            return View(formDto);
+        }
+
+        // GET: /Product/Edit/5
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var product = await _servicesManager.ProductServices.GetProductByIdAsync(id);
+            if (product.StatusCode != 200 || product.Data == null)
+                return NotFound(product.Message);
+
+            var categories = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Data ?? new List<CategoryResponseDto>();
+
+            // Reuse Details model for display; inputs will bind manually
+            return View(product.Data);
         }
 
         [HttpPut]
@@ -52,6 +101,24 @@ namespace POS.Controllers
         {
             var result = await _servicesManager.ProductServices.UpdateProductAsync(id, dto);
             return Json(result);
+        }
+
+        // POST: /Product/Edit (form POST)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(UpdateProductDto dto)
+        {
+            if (dto == null || dto.Id <= 0)
+                return BadRequest();
+
+            var result = await _servicesManager.ProductServices.UpdateProductAsync(dto.Id, dto);
+            if (result.StatusCode == 200)
+                return RedirectToAction(nameof(Index));
+
+            var categories = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
+            ViewBag.Categories = categories.Data ?? new List<CategoryResponseDto>();
+            ViewBag.Error = result.Message;
+            return View(result.Data);
         }
 
         [HttpDelete]

@@ -1,0 +1,65 @@
+@model DTO.ProductDtos.ProductResponseDto
+@using DTO.ProductDtos
+@using DTO.CategoryDtos
+@{
+    ViewData["Title"] = "تعديل منتج";
+    var categories = ViewBag.Categories as IEnumerable<CategoryResponseDto>;
+}
+
+<div class="row">
+    <div class="col-12 col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">تعديل منتج</h5>
+                <a class="btn btn-outline-secondary btn-sm" href="@Url.Action("Index", "Product")">رجوع</a>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" name="Id" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">اسم المنتج *</label>
+                        <input name="Name" class="form-control" value="@Model.Name" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الفئة *</label>
+                        <select name="CategoryId" class="form-select" required>
+                            <option value="">اختر الفئة</option>
+                            @if (categories != null)
+                            {
+                                foreach (var c in categories)
+                                {
+                                    <option value="@c.Id" @(Model is not null && c.Id == 0 ? "selected" : "")>@c.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">السعر *</label>
+                                <input name="Price" type="number" step="0.01" min="0" class="form-control" value="@Model.Price" required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">المخزون</label>
+                                <input name="Stock" type="number" min="0" class="form-control" value="@Model.Stock" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الوصف</label>
+                        <textarea name="Description" class="form-control" rows="3">@Model.Description</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">حفظ</button>
+                </form>
+                @if (ViewBag.Error != null)
+                {
+                    <div class="alert alert-danger mt-3">@ViewBag.Error</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
