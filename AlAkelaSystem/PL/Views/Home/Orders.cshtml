@@ -37,8 +37,8 @@
                                         <td>@o.Id</td>
                                         <td>@o.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
                                         <td>@o.CustomerName</td>
-                                        <td>@o.Status</td>
-                                        <td>@(o.TotalAmount?.ToString("C", new System.Globalization.CultureInfo("ar-SA")))</td>
+                                        <td>@o.Stauts</td>
+                                        <td>@(o.TotalAmount.ToString("C", new System.Globalization.CultureInfo("ar-SA")))</td>
                                     </tr>
                                 }
                             }
