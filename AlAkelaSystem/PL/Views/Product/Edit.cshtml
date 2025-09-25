@@ -28,7 +28,7 @@
                             {
                                 foreach (var c in categories)
                                 {
-                                    <option value="@c.Id" @(Model is not null && c.Id == 0 ? "selected" : "")>@c.Name</option>
+                                    <option value="@c.Id"> @c.Name</option>
                                 }
                             }
                         </select>

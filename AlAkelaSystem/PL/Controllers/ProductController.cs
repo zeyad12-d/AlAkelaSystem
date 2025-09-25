@@ -58,30 +58,7 @@ namespace POS.Controllers
             return Json(result);
         }
 
-        // Form POST: /Product/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Consumes("application/x-www-form-urlencoded", "multipart/form-data")]
-        public async Task<IActionResult> Create(CreateProductDto formDto)
-        {
-            if (!ModelState.IsValid)
-            {
-                var categories = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
-                ViewBag.Categories = categories.Data ?? new List<CategoryResponseDto>();
-                return View(formDto);
-            }
 
-            var result = await _servicesManager.ProductServices.CreateProductAsync(formDto);
-            if (result.StatusCode == 200 || result.StatusCode == 201)
-                return RedirectToAction(nameof(Index));
-
-            var cats = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
-            ViewBag.Categories = cats.Data ?? new List<CategoryResponseDto>();
-            ViewBag.Error = result.Message;
-            return View(formDto);
-        }
-
-        // GET: /Product/Edit/5
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -92,7 +69,7 @@ namespace POS.Controllers
             var categories = await _servicesManager.CategoryServices.GetAllCategoriesAsync();
             ViewBag.Categories = categories.Data ?? new List<CategoryResponseDto>();
 
-            // Reuse Details model for display; inputs will bind manually
+           
             return View(product.Data);
         }
 
@@ -103,7 +80,7 @@ namespace POS.Controllers
             return Json(result);
         }
 
-        // POST: /Product/Edit (form POST)
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateProductDto dto)
