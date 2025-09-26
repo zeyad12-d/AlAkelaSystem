@@ -142,13 +142,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["Action"]?.ToString() == "Orders" ? "active" : "")"
-                           href="@Url.Action("Orders", "Home")">
-                            <i class="fas fa-receipt me-2"></i>
-                            إدارة الطلبات
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link @((ViewContext.RouteData.Values["Controller"]?.ToString() == "Category" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index") ? "active" : "")"
                            href="@Url.Action("Index", "Category")">
                             <i class="fas fa-tags me-2"></i>
@@ -177,8 +170,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Extras" ? "active" : "")"
-                           href="@Url.Action("Extras", "Home")">
+                        <a class="nav-link @((ViewContext.RouteData.Values["Controller"]?.ToString() == "Extras" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index") ? "active" : "")"
+                           href="@Url.Action("Index", "Extras")">
                             <i class="fas fa-plus-circle me-2"></i>
                             إدارة الإضافات
                         </a>
