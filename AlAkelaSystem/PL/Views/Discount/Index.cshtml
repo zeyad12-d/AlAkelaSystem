@@ -1,0 +1,185 @@
+﻿@model IEnumerable<DTO.DiscountDtos.DiscountResponseDto>
+
+@{
+    ViewData["Title"] = "إدارة الخصومات";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-percent"></i> إدارة الخصومات</h2>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createDiscountModal">
+            <i class="fas fa-plus"></i> إضافة خصم جديد
+        </button>
+    </div>
+
+    <table class="table table-hover table-bordered text-center align-middle shadow-sm">
+        <thead class="table-primary">
+            <tr>
+                <th>Id</th>
+                <th>اسم الخصم</th>
+                <th>قيمة الخصم</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.id</td>
+                    <td>@item.discountName</td>
+                    <td>@item.discountValue %</td>
+                    <td>
+                        <!-- زر تعديل -->
+                        <button class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editDiscountModal"
+                                data-id="@item.id"
+                                data-name="@item.discountName"
+                                data-value="@item.discountValue">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <!-- زر حذف -->
+                        <button class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteDiscountModal"
+                                data-id="@item.id"
+                                data-name="@item.discountName">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- 🔹 Create Modal -->
+<div class="modal fade" id="createDiscountModal" tabindex="-1" aria-labelledby="createDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-plus"></i> إضافة خصم جديد</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-action="Create" method="post" id="createDiscountForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">اسم الخصم</label>
+                        <input type="text" name="discountName" class="form-control" placeholder="أدخل اسم الخصم" required />
+                        <span class="text-danger" data-valmsg-for="discountName"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">قيمة الخصم</label>
+                        <div class="input-group">
+                            <input type="number" name="discountValue" class="form-control" placeholder="أدخل نسبة الخصم" required />
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <span class="text-danger" data-valmsg-for="discountValue"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="editDiscountModal" tabindex="-1" aria-labelledby="editDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="fas fa-edit"></i> تعديل الخصم</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" id="editDiscountForm">
+                <input type="hidden" id="editId" name="id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">اسم الخصم</label>
+                        <input type="text" id="editDiscountName" name="discountName" class="form-control" required />
+                        <span class="text-danger" data-valmsg-for="discountName"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">قيمة الخصم</label>
+                        <div class="input-group">
+                            <input type="number" id="editDiscountValue" name="discountValue" class="form-control" required />
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <span class="text-danger" data-valmsg-for="discountValue"></span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-warning text-white">تحديث</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 🔹 Delete Modal -->
+<div class="modal fade" id="deleteDiscountModal" tabindex="-1" aria-labelledby="deleteDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-trash"></i> حذف الخصم</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form method="post" id="deleteDiscountForm">
+                <input type="hidden" id="deleteId" name="id" />
+                <div class="modal-body text-center">
+                    <p class="fw-bold text-danger">هل أنت متأكد من حذف هذا الخصم؟</p>
+                    <p id="deleteDiscountName" class="text-muted"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-danger">حذف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Edit Modal
+        var editModal = document.getElementById('editDiscountModal');
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var name = button.getAttribute('data-name');
+            var value = button.getAttribute('data-value');
+
+            document.getElementById('editId').value = id;
+            document.getElementById('editDiscountName').value = name;
+            document.getElementById('editDiscountValue').value = value;
+
+            document.getElementById('editDiscountForm').action = '/Discount/Edit/' + id;
+        });
+
+        // Delete Modal
+        var deleteModal = document.getElementById('deleteDiscountModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var name = button.getAttribute('data-name');
+
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteDiscountName').textContent = "الخصم: " + name;
+
+            document.getElementById('deleteDiscountForm').action = '/Discount/Delete/' + id;
+        });
+    </script>
+}

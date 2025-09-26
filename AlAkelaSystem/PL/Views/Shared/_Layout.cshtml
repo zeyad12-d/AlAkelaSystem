@@ -163,12 +163,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Discounts" ? "active" : "")"
-                           href="@Url.Action("Discounts", "Home")">
+                        <a class="nav-link @((ViewContext.RouteData.Values["Controller"]?.ToString() == "Discount"
+                          && ViewContext.RouteData.Values["Action"]?.ToString() == "Index") ? "active" : "")"
+                           href="@Url.Action("Index", "Discount")">
                             <i class="fas fa-percent me-2"></i>
                             إدارة الخصومات
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link @((ViewContext.RouteData.Values["Controller"]?.ToString() == "Extras" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index") ? "active" : "")"
                            href="@Url.Action("Index", "Extras")">

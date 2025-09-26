@@ -1,0 +1,55 @@
+﻿@model DTO.DiscountDtos.CreateDiscountDto
+
+@{
+    ViewData["Title"] = "إضافة خصم جديد";
+}
+
+<!-- Modal -->
+<div class="modal fade" id="createDiscountModal" tabindex="-1" aria-labelledby="createDiscountModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createDiscountModalLabel">
+                    <i class="fas fa-percent me-2"></i> إضافة خصم جديد
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <form asp-action="Create" method="post" id="createDiscountForm">
+                    <div class="mb-3">
+                        <label asp-for="discountName" class="form-label fw-bold"></label>
+                        <input asp-for="discountName" class="form-control" placeholder="أدخل اسم الخصم" />
+                        <span asp-validation-for="discountName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="discountValue" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <input asp-for="discountValue" class="form-control" placeholder="أدخل نسبة الخصم" />
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <span asp-validation-for="discountValue" class="text-danger"></span>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button type="submit" form="createDiscountForm" class="btn btn-success">
+                    <i class="fas fa-save"></i> حفظ
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
