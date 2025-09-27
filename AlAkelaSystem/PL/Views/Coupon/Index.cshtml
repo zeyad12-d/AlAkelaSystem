@@ -1,0 +1,207 @@
+﻿@model IEnumerable<DTO.CouponDtos.CouponResponseDto>
+
+@{
+    ViewData["Title"] = "إدارة الكوبونات";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2><i class="fas fa-ticket-alt"></i> إدارة الكوبونات</h2>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createCouponModal">
+            <i class="fas fa-plus"></i> إضافة كوبون جديد
+        </button>
+    </div>
+
+    <table class="table table-hover table-bordered text-center align-middle shadow-sm">
+        <thead class="table-primary">
+            <tr>
+                <th>Id</th>
+                <th>الكود</th>
+                <th>قيمة الخصم</th>
+                <th>تاريخ الإنتهاء</th>
+                <th>الحالة</th>
+                <th>الإجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Code</td>
+                    <td>@item.DiscountAmount</td>
+                    <td>@item.ExpiryDate.ToString("yyyy-MM-dd")</td>
+                    <td>
+                        @if (item.IsActive)
+                        {
+                            <span class="badge bg-success">نشط</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">غير نشط</span>
+                        }
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editCouponModal"
+                                data-id="@item.Id"
+                                data-code="@item.Code"
+                                data-discount="@item.DiscountAmount"
+                                data-expiry="@item.ExpiryDate.ToString("yyyy-MM-dd")"
+                                data-active="@(item.IsActive.ToString().ToLower())">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <button class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteCouponModal"
+                                data-id="@item.Id"
+                                data-code="@item.Code">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="createCouponModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-plus"></i> إضافة كوبون جديد</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-action="Create" asp-controller="Coupon" method="post" id="createCouponForm">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">كود الكوبون</label>
+                        <input type="text" name="Code" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">قيمة الخصم</label>
+                        <input type="number" name="DiscountAmount" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">تاريخ الإنتهاء</label>
+                        <input type="date" name="ExpiryDate" class="form-control" required />
+                    </div>
+                    <input type="hidden" name="IsActive" value="false" />
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="IsActive" value="true" class="form-check-input" id="createIsActive" checked />
+                        <label class="form-check-label" for="createIsActive">نشط</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-success">حفظ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editCouponModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title"><i class="fas fa-edit"></i> تعديل الكوبون</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-action="Edit" asp-controller="Coupon" method="post" id="editCouponForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="editId" name="Id" />
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">كود الكوبون</label>
+                        <input type="text" id="editCode" name="Code" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">قيمة الخصم</label>
+                        <input type="number" id="editDiscount" name="DiscountAmount" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">تاريخ الإنتهاء</label>
+                        <input type="date" id="editExpiry" name="ExpiryDate" class="form-control" required />
+                    </div>
+                    <input type="hidden" name="IsActive" value="false" />
+                    <div class="form-check mb-3">
+                        <input type="checkbox" id="editActive" name="IsActive" value="true" class="form-check-input" />
+                        <label class="form-check-label" for="editActive">نشط</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-warning text-white">تحديث</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteCouponModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg rounded-3">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-trash"></i> حذف الكوبون</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form asp-action="Delete" asp-controller="Coupon" method="post" id="deleteCouponForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="deleteId" name="id" />
+                <div class="modal-body text-center">
+                    <p class="fw-bold text-danger">هل أنت متأكد من حذف هذا الكوبون؟</p>
+                    <p id="deleteCouponCode" class="text-muted"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="submit" class="btn btn-danger">حذف</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        var editModal = document.getElementById('editCouponModal');
+        editModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var code = button.getAttribute('data-code');
+            var discount = button.getAttribute('data-discount');
+            var expiry = button.getAttribute('data-expiry');
+            var active = (button.getAttribute('data-active') || "false").toLowerCase() === "true";
+
+            document.getElementById('editId').value = id;
+            document.getElementById('editCode').value = code;
+            document.getElementById('editDiscount').value = discount;
+            document.getElementById('editExpiry').value = expiry;
+            document.getElementById('editActive').checked = active;
+
+            document.getElementById('editCouponForm').action = '/Coupon/Edit/' + id;
+        });
+
+        var deleteModal = document.getElementById('deleteCouponModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var id = button.getAttribute('data-id');
+            var code = button.getAttribute('data-code');
+
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteCouponCode').textContent = "الكود: " + code;
+
+            document.getElementById('deleteCouponForm').action = '/Coupon/Delete/' + id;
+        });
+    </script>
+}

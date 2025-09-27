@@ -21,6 +21,17 @@ namespace DTO.MapperProfiles
                 .ForMember(d => d.ExpiryDate, o => o.MapFrom(s => s.ExpiryDate))
                 .ForMember(d => d.IsActive, o => o.MapFrom(s => s.IsActive)).ReverseMap();
 
+            CreateMap <Coupon, CreateCouponDto>()
+                .ForMember(d => d.Code, o => o.MapFrom(s => s.Code))
+                .ForMember(d => d.DiscountAmount, o => o.MapFrom(s => s.DiscountAmount))
+                .ForMember(d => d.ExpiryDate, o => o.MapFrom(s => s.ExpiryDate))
+                .ForMember(d => d.IsActive, o => o.MapFrom(s => s.IsActive)).ReverseMap();
+
+            CreateMap<Coupon, UpdateCouponDto>()
+        .ForMember(d => d.Code, o => o.MapFrom(s => s.Code))
+                .ForMember(d => d.DiscountAmount, o => o.MapFrom(s => s.DiscountAmount))
+                .ForMember(d => d.ExpiryDate, o => o.MapFrom(s => s.ExpiryDate))
+                .ForMember(d => d.IsActive, o => o.MapFrom(s => s.IsActive)).ReverseMap();
 
 
         }

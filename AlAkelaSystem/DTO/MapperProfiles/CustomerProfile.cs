@@ -27,6 +27,11 @@ namespace DTO.MapperProfiles
                 .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address))
                 .ForMember(dest => dest.OrdersCount, opt => opt.MapFrom(src => src.Orders.Count));
+            CreateMap<CreateCustomerDto, Customer>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Phone, opt => opt.MapFrom(src => src.Phone))
+                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => src.Address)).ReverseMap();
+
         }
     }
 }

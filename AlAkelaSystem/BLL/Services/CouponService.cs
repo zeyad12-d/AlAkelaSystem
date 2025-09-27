@@ -26,7 +26,6 @@ namespace BLL.Services
         {
             var coupons = await _unitOfWork.CouponRepo
                 .Query()
-                .Where(s=>s.IsActive== true)
                 .ToListAsync();
             if (coupons==null||!coupons.Any())
                 return new ApiResponse<IEnumerable<CouponResponseDto>>(404, "Coupnes Not Found");

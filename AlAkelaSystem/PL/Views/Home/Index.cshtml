@@ -237,7 +237,7 @@
                 <form id="newCustomerForm">
                     <div class="mb-3">
                         <label class="form-label">اسم العميل *</label>
-                        <input type="text" class="form-control" id="customerName" required>
+                        <input type="text" class="form-control" id="newCustomerName" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">رقم الهاتف</label>
@@ -437,7 +437,6 @@
                 if (result.statusCode === 200 || result.statusCode === 201) {
                     showAlert('success', 'نجح!', 'تم إنشاء الطلب بنجاح');
                     clearCart();
-                    // يمكنك إضافة طباعة الفاتورة هنا
                     printReceipt(result.data);
                 } else {
                     showAlert('error', 'خطأ', result.message || 'حدث خطأ أثناء إنشاء الطلب');
@@ -477,7 +476,6 @@
                 const result = await response.json();
 
                 if (result.statusCode === 200 && result.data && result.data.length > 0) {
-                    // عرض قائمة العملاء للاختيار من بينها
                     showCustomerSelectionModal(result.data);
                 } else {
                     showAlert('info', 'لا توجد نتائج', 'لم يتم العثور على عملاء مطابقين');
@@ -491,8 +489,6 @@
 
         // عرض نافذة اختيار العميل
         function showCustomerSelectionModal(customers) {
-            // يمكنك تطوير modal لاختيار العميل
-            // لتبسيط المثال، سنختار العميل الأول
             selectCustomer(customers[0]);
         }
 
@@ -512,12 +508,16 @@
 
         // إنشاء عميل جديد
         async function createNewCustomer() {
-            const name = document.getElementById('customerName').value;
+            const name = document.getElementById('newCustomerName').value;
             const phone = document.getElementById('customerPhone').value;
             const address = document.getElementById('customerAddress').value;
 
-            if (!name) {
-                showAlert('warning', 'تنبيه', 'يرجى إدخال اسم العميل');
+            if (!name || name.trim().length < 2) {
+                showAlert('warning', 'تنبيه', 'يرجى إدخال اسم صالح (على الأقل حرفين)');
+                return;
+            }
+            if (phone && !/^\+?\d{9,15}$/.test(phone)) {
+                showAlert('warning', 'تنبيه', 'يرجى إدخال رقم هاتف صالح');
                 return;
             }
 
@@ -525,7 +525,7 @@
 
             try {
                 const customerData = {
-                    name: name,
+                    name: name.trim(),
                     phone: phone,
                     address: address
                 };
@@ -539,17 +539,26 @@
                 });
 
                 const result = await response.json();
+                if (!result) {
+                    showAlert('error', 'خطأ', 'لا توجد استجابة من الخادم');
+                    return;
+                }
 
                 if (result.statusCode === 200 || result.statusCode === 201) {
+                    if (!result.data) {
+                        showAlert('error', 'خطأ', 'بيانات العميل غير متوفرة في الاستجابة');
+                        return;
+                    }
                     showAlert('success', 'نجح!', 'تم إنشاء العميل بنجاح');
                     selectCustomer(result.data);
-                    bootstrap.Modal.getInstance(document.getElementById('newCustomerModal')).hide();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('newCustomerModal'));
+                    if (modal) modal.hide();
                     document.getElementById('newCustomerForm').reset();
                 } else {
                     showAlert('error', 'خطأ', result.message || 'حدث خطأ أثناء إنشاء العميل');
                 }
             } catch (error) {
-                showAlert('error', 'خطأ', 'حدث خطأ في الاتصال');
+                showAlert('error', 'خطأ', 'حدث خطأ في الاتصال: ' + error.message);
             } finally {
                 hideLoading();
             }
@@ -557,7 +566,6 @@
 
         // طباعة الفاتورة
         function printReceipt(orderData) {
-            // يمكنك تطوير نظام طباعة الفاتورة هنا
             console.log('طباعة الفاتورة:', orderData);
         }
 
@@ -566,7 +574,7 @@
             const categoryId = this.value;
 
             if (!categoryId) {
-                location.reload(); // إعادة تحميل جميع المنتجات
+                location.reload();
                 return;
             }
 

@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts Arabic -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700&display=swap" rel="stylesheet">
+    <!-- add icon-->
+    <link rel="icon" type="image/x-icon" href="~/images/Images/download.jpg">
 
     <style>
         * {
@@ -156,12 +158,14 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Coupons" ? "active" : "")"
-                           href="@Url.Action("Coupons", "Home")">
-                            <i class="fas fa-ticket-alt me-2"></i>
-                            إدارة الكوبونات
+                        <a class="nav-link @((ViewContext.RouteData.Values["Controller"]?.ToString() == "Discount"
+                          && ViewContext.RouteData.Values["Action"]?.ToString() == "Index") ? "active" : "")"
+                           href="@Url.Action("Index", "Coupon")">
+                            <i class="fas fa-percent me-2"></i>
+                           إدارة  الكوبونات
                         </a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link @((ViewContext.RouteData.Values["Controller"]?.ToString() == "Discount"
                           && ViewContext.RouteData.Values["Action"]?.ToString() == "Index") ? "active" : "")"
